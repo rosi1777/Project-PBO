@@ -1,8 +1,8 @@
 class Item:
 
-    def __init__(self, id, name, sellingPrice, purchasePrice, stock):
+    def __init__(self, id, nama, hargaJual, hargaBeli, stok):
         self.id = id
-        self.name = name
-        self.sellPrice = sellingPrice
-        self.purchasePrice = purchasePrice
-        self.stock = stock
+        self.name = nama
+        self.sellPrice = hargaJual
+        self.purchasePrice = hargaBeli
+        self.stock = stok
