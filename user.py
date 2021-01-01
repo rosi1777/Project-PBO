@@ -2,11 +2,17 @@ import sqlite3
 
 create_User_Table = "CREATE TABLE IF NOT EXISTS user (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT, gender TEXT, alamat TEXT, telepon INTEGER, tanggalMasuk TEXT);"
 
-insert_User_Table = "INSERT INTO user (username, password, nama, gender, alamat, telepon, tanggalMasuk) VALUES (?, ?, ?, ?, ?, ?, ?);"
+insert_employee = "INSERT INTO user (username, password, nama, gender, alamat, telepon, tanggalMasuk) VALUES (?, ?, ?, ?, ?, ?, ?);"
 
-get_User_Table = "SELECT * FROM user"
+insert_owner = "INSERT INTO user (username, password, nama, gender, alamat, telepon) VALUES ('synerfo', 'synerfo1234', 'Rafi Cahya Putra', 'Pria', 'Probolinggo', 081238657974);"
 
-get_User_Founder = "SELECT username, password, nama, gender, alamat, telepon FROM user WHERE tanggalMasuk = 'none';"
+update_owner = "UPDATE user SET username = ?, password = ?, nama = ?, gender = ?, alamat = ?, telepon = ? WHERE username = ?"
+
+update_employee = "UPDATE user SET username = ?, password = ?, nama = ?, gender = ?, alamat = ?, telepon = ?, tanggalMasuk = ? WHERE username = ?"
+
+get_employee = "SELECT username, password, nama, gender, alamat, telepon, tanggalMasuk FROM user WHERE tanggalMasuk != NULL;"
+
+get_owner = "SELECT username, password, nama, gender, alamat, telepon FROM user WHERE tanggalMasuk = NULL;"
 
 
 def connect():
@@ -18,32 +24,38 @@ def createUserTable(connection):
         connection.execute(create_User_Table)
 
 
-def addUser(connection, username, password, nama, gender, alamat, telepon, tanggalMasuk):
+def addEmployee(connection, username, password, nama, gender, alamat, telepon, tanggalMasuk):
     with connection:
         connection.execute(
-            insert_User_Table, (username, password, nama, gender, alamat, telepon, tanggalMasuk))
+            insert_employee, (username, password, nama, gender, alamat, telepon, tanggalMasuk))
 
-
-def getAllUser(connection):
+def updateOwner(connection, username, password, nama, gender, alamat, telepon):
     with connection:
-        return connection.execute(get_User_Table).fetchall()
+        connection.execute(update_owner, (username, connection, username, password, nama, gender, alamat, telepon))
 
-
-def getUserFounder(connection):
+def updateEmployee(connection, username, password, nama, gender, alamat, telepon, tanggalMasuk):
     with connection:
-        return connection.execute(get_User_Founder).fetchall()
+        connection.execute(update_owner, (username, connection, username, password, nama, gender, alamat, telepon, tanggalMasuk))
+
+def getEmployee(connection):
+    with connection:
+        return connection.execute(get_employee).fetchall()
+
+
+def getOwner(connection):
+    with connection:
+        return connection.execute(get_owner).fetchone()
 
 
 class User:
 
-    def __init__(self, username, password, nama, gender, alamat, telepon, tanggalMasuk):
+    def __init__(self, username, password, nama, gender, alamat, telepon):
         self.__username = username
         self.__password = password
         self.__name = nama
         self.__gender = gender
         self.__address = alamat
         self.__phone = telepon
-        self.__acceptedWork = tanggalMasuk
 
     @property
     def getUsername(self):
@@ -93,22 +105,4 @@ class User:
     def getPhone(self):
         return self.__phone
 
-    @property
-    def getAcceptedWork(self):
-        pass
-
-    @getAcceptedWork.getter
-    def getAcceptedWork(self):
-        return self.__acceptedWork
-
-    def promtAddUser(self, connection):
-        user = User(input("Masukkan username : "), input(
-            "Masukkan password : "), input("Masukkan nama : "), input("Masukkan gender : "), input("Masukkan alamat : "), input("Masukkan telepon : "), input("Masukkan tanggal masuk : "))
-        addUser(connection, user.getUsername, user.getPassword, user.getName,
-                user.getGender, user.getAddress, user.getPhone, user.getAcceptedWork)
-
-    def userInfo(self, connection):
-        users = getAllUser(connection)
-
-        for user_info in users:
-            print(user_info)
+    
