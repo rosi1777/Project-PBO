@@ -11,18 +11,43 @@ def createItemTable(connection):
 def insertItem(connection):
     with connection:
         connection.execute(insert_Item)
-
-def addItem(connection, nama, hargaJual, hargaBeli, stok):
-    with connection:
-        connection.execute(
-            insert_Item, (nama, hargaJual, hargaBeli, stok)
-        )
-
 class Item:
 
     def __init__(self, nama, hargaJual, hargaBeli, stok):
-        self.name = nama
-        self.sellPrice = hargaJual
-        self.purchasePrice = hargaBeli
-        self.stock = stok
+        self.__name = nama
+        self.__sellPrice = hargaJual
+        self.__purchasePrice = hargaBeli
+        self.__stock = stok
+
+    @property
+    def getName(self):
+        pass
+
+    @getName.getter
+    def getName(self):
+        return self.__name
+
+    @property
+    def getSellPrice(self):
+        pass
+
+    @getSellPrice.getter
+    def getSellPrice(self):
+        return self.__sellPrice
+
+    @property
+    def getPurchasePrice(self):
+        pass
+
+    @getPurchasePrice.getter
+    def getPurchasePrice(self):
+        return self.__purchasePrice
+
+    @property
+    def getStock(self):
+        pass
+
+    @getStock.getter
+    def getStock(self):
+        return self.__stock
 
