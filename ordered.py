@@ -1,25 +1,25 @@
 import sqlite3
 
-create_order_table = "CREATE TABLE IF NOT EXISTS order (id INTEGER NOT NULL PRIMARY KEY, namaPemesan TEXT, alamat TEXT, barang TEXT, jumlah INTEGER, tanggalPesan TEXT, status TEXT);"
+create_Ordered_Table = "CREATE TABLE IF NOT EXISTS ordered (id INTEGER NOT NULL PRIMARY KEY, namaPemesan TEXT, alamat TEXT, barang TEXT, jumlah INTEGER, tanggalPesan TEXT, status TEXT);"
 
-insert_order = "INSERT INTO order (namaPemesan, alamat, barang, jumlah, tanggalPesan, status) VALUES (?, ?, ?, ?, ?, ?);"
+insert_order = "INSERT INTO ordered (namaPemesan, alamat, barang, jumlah, tanggalPesan, status) VALUES (?, ?, ?, ?, ?, ?);"
 
-update_order_status = "UPDATE order SET status = 'selesai' WHERE id = ?"
+update_order_status = "UPDATE ordered SET status = 'selesai' WHERE id = ?"
 
-get_order = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM order WHERE status = 'proses'"
+get_order = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'proses'"
 
-get_sales = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM order WHERE status = 'selesai'"
+get_sales = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'selesai'"
 
 connection = sqlite3.connect("rajaes.db")
 
 def createOrderTable(connection):
     with connection:
-        connection.execute(create_order_table)
+        connection.execute(create_Ordered_Table)
 
 
-def addOrder(connection):
+def addOrder(connection, namaPemesan, alamat, barang, jumlah, tanggalPesan, status):
     with connection:
-        connection.execute(insert_order)
+        connection.execute(insert_order, (namaPemesan, alamat, barang, jumlah, tanggalPesan, status))
 
 
 def updateStatus(connection):
@@ -84,6 +84,3 @@ class Ordered:
     @getOrderDate.getter
     def getOrderDate(self):
         return self.__orderDate
-
-
-createOrderTable(connection)
