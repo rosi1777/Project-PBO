@@ -1,20 +1,16 @@
-import sqlite3
+from user import connection
 
-create_Item = "create table if not exist Item (id integer not null primary key, nama text , hargaJual integer, hargaBeli integer, stok integer );"
+create_Item = "CREATE TABLE IF NOT EXISTS item (id INTEGER NOT NULL PRIMARY KEY, nama text , hargaJual integer, hargaBeli integer, stok integer );"
 
-insert_Item = "insert into Item(nama, hargaJual, hargaBeli, stok)values (?,?,?,?);"
-
-get_Item = "select * from Item"
-
-
-def connect():
-    return sqlite3.connect("rajaes.db")
-
+insert_Item = "INSERT INTO item (nama, hargaJual, hargaBeli, stok) VALUES ('Jelly', 10000, 7000, 100), ('Cincau', 5000, 7000, 70), ('Mutiara', 12000, 8000, 77), ('Rumput Laut', 20000, 15000, 150), ('Kolang Kaling', 15000, 13000, 177);"
 
 def createItemTable(connection):
     with connection:
         connection.execute(create_Item)
 
+def insertItem(connection):
+    with connection:
+        connection.execute(insert_Item)
 
 def addItem(connection, nama, hargaJual, hargaBeli, stok):
     with connection:
@@ -22,27 +18,11 @@ def addItem(connection, nama, hargaJual, hargaBeli, stok):
             insert_Item, (nama, hargaJual, hargaBeli, stok)
         )
 
-
-def getAllItem(connection):
-    with connection:
-        return connection.execute(get_Item).fetchall()
-
-
 class Item:
 
-    def __init__(self, id, nama, hargaJual, hargaBeli, stok):
-        self.id = id
+    def __init__(self, nama, hargaJual, hargaBeli, stok):
         self.name = nama
         self.sellPrice = hargaJual
         self.purchasePrice = hargaBeli
         self.stock = stok
 
-    def promtAddItem(self, connection):
-        Item = Item(input('masukkan nama barang:'),
-                    input('masukkan harga jual  barang:'), input('masukkan harga beli barang:'), input('masukkan stok:'))
-
-    def itemInfo(self, connection):
-        Item = getAllItem(connection)
-
-        for item_Info in Item:
-            print(item_Info)
