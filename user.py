@@ -1,5 +1,4 @@
 import sqlite3
-import main
 
 create_User_Table = "CREATE TABLE IF NOT EXISTS user (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT, gender TEXT, alamat TEXT, telepon INTEGER, tanggalMasuk TEXT);"
 
@@ -120,40 +119,6 @@ class User:
     def getPhone(self):
         return self.__phone
 
-    @staticmethod
-    def login(connection):
-        print("---------Login--------")
-        username = str(input("Masukkan Username"))
-        password = str(input("Masukkan Password"))
-        
-        tempUsername = []
-        tempPassword = []
-        tempName = []
-        tempGender = []
-        tempAddress = []
-        tempPhone = []
-        tempAcceptedWords = []
-        tempId = []
-
-        for x in getAll(connection):
-            tempId.append(x[0])
-            tempUsername.append(x[1])
-            tempPassword.append(x[2])
-            tempName.append(x[3])
-            tempGender.append(x[4])
-            tempAddress.append(x[5])
-            tempPhone.append(x[6])
-            tempAcceptedWords.append(x[7])
-        
-        for i in range(len(tempUsername)):
-            if username == tempUsername[i] and password == tempPassword[i]:           
-                print("Login Sucsess\n")
-                if tempAcceptedWords[i] == "NULL":
-                    main.ownerMenu()
-                else:
-                    main.employeeMenu()
-            else:
-                User.login(connection)
 
 
 
