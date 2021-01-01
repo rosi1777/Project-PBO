@@ -2,7 +2,9 @@ import sqlite3
 
 create_User_Table = "CREATE TABLE IF NOT EXISTS user (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT, gender TEXT, alamat TEXT, telepon INTEGER, tanggalMasuk TEXT);"
 
-insert_employee = "INSERT INTO user (username, password, nama, gender, alamat, telepon, tanggalMasuk) VALUES (?, ?, ?, ?, ?, ?, ?);"
+insert_employee = "INSERT INTO user (username, password, nama, gender, alamat, telepon, tanggalMasuk) VALUES ('wnykhza', 'wnykhza77*', 'Fathorrosi', 'Pria', 'Probolinggo', 085335211419, '21-02-1994'), ('eren', 'eren1234', 'Eren Yeager', 'Pria', 'Paradise', 837283628362, '12-08-2013'), ('naruto', 'naruto1234', 'Uzumaki Naruto', 'Pria', 'Konoha', 18371739173, '07-07-1919');"
+
+insert_new_employee = "INSERT INTO user (username, password, nama, gender, alamat, telepon, tanggalMasuk) VALUES (?, ?, ?, ?, ?, ?, ?);"
 
 insert_owner = "INSERT INTO user (username, password, nama, gender, alamat, telepon) VALUES ('synerfo', 'synerfo1234', 'Rafi Cahya Putra', 'Pria', 'Probolinggo', 081238657974);"
 
@@ -14,20 +16,26 @@ get_employee = "SELECT username, password, nama, gender, alamat, telepon, tangga
 
 get_owner = "SELECT username, password, nama, gender, alamat, telepon FROM user WHERE tanggalMasuk = NULL;"
 
-
-def connect():
-    return sqlite3.connect("rajaes.db")
-
+connection = sqlite3.connect("rajaes.db")
 
 def createUserTable(connection):
     with connection:
         connection.execute(create_User_Table)
 
+def addEmployee(connection):
+    with connection:
+        connection.execute(insert_employee)
 
-def addEmployee(connection, username, password, nama, gender, alamat, telepon, tanggalMasuk):
+
+def addOwner(connection):
+    with connection:
+        connection.execute(insert_owner)
+
+
+def addNewEmployee(connection, username, password, nama, gender, alamat, telepon, tanggalMasuk):
     with connection:
         connection.execute(
-            insert_employee, (username, password, nama, gender, alamat, telepon, tanggalMasuk))
+            insert_new_employee, (username, password, nama, gender, alamat, telepon, tanggalMasuk))
 
 def updateOwner(connection, username, password, nama, gender, alamat, telepon):
     with connection:
@@ -105,4 +113,4 @@ class User:
     def getPhone(self):
         return self.__phone
 
-    
+addOwner(connection)
