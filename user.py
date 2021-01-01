@@ -16,6 +16,8 @@ get_employee = "SELECT username, password, nama, gender, alamat, telepon, tangga
 
 get_owner = "SELECT username, password, nama, gender, alamat, telepon FROM user WHERE tanggalMasuk = NULL;"
 
+get_All = "SELECT * FROM user"
+
 connection = sqlite3.connect("rajaes.db")
 
 def createUserTable(connection):
@@ -53,6 +55,10 @@ def getEmployee(connection):
 def getOwner(connection):
     with connection:
         return connection.execute(get_owner).fetchone()
+
+def getAll(connection):
+    with connection:
+        return connection.execute(get_All).fetchall()
 
 
 class User:
@@ -113,4 +119,31 @@ class User:
     def getPhone(self):
         return self.__phone
 
-    
+    @staticmethod
+    def login(connection):
+
+        print("--------Login----------")
+
+        username = str(input("Masukkan Username"))
+        password = str(input("Masukkan Password"))
+        
+        tempUsername = []
+        tempPassword = []
+        tempName = []
+        tempGender = []
+        tempAddress = []
+        tempPhone = []
+        tempAcceptedWords = []
+        tempId = []
+
+        for x in getAll(connection):
+            tempId.append(x[0])
+            tempUsername.append(x[1])
+            tempPassword.append(x[2])
+            tempName.append(x[3])
+            tempGender.append(x[4])
+            tempAddress.append(x[5])
+            tempPhone.append(x[6])
+            tempAcceptedWords.append(x[7])
+
+
