@@ -1,4 +1,6 @@
 import sqlite3
+import item
+import ordered
 
 create_User_Table = "CREATE TABLE IF NOT EXISTS user (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT, gender TEXT, alamat TEXT, telepon INTEGER, tanggalMasuk TEXT);"
 
@@ -12,7 +14,7 @@ update_owner = "UPDATE user SET username = ?, password = ?, nama = ?, gender = ?
 
 update_employee = "UPDATE user SET username = ?, password = ?, nama = ?, gender = ?, alamat = ?, telepon = ?, tanggalMasuk = ? WHERE username = ?"
 
-get_employee = "SELECT username, password, nama, gender, alamat, telepon, tanggalMasuk FROM user WHERE tanggalMasuk != NULL;"
+get_employee = "SELECT id, username, password, nama, gender, alamat, telepon, tanggalMasuk FROM user WHERE tanggalMasuk != NULL;"
 
 get_owner = "SELECT username, password, nama, gender, alamat, telepon FROM user WHERE tanggalMasuk = NULL;"
 
@@ -118,6 +120,8 @@ class User:
     @getPhone.getter
     def getPhone(self):
         return self.__phone
+
+
 
 
 
