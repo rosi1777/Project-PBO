@@ -107,6 +107,8 @@ def login():
                 ownerMenu()
             else:
                 employeeMenu()
+        else:
+            login()
 
 
 login()
