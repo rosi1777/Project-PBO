@@ -1,39 +1,36 @@
 import sqlite3
-
-create_Owner_Table = "CREATE TABLE IF NOT EXISTS owner (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT);"
-
-insert_owner = "INSERT INTO owner (username, password, nama) VALUES ('synerfo', 'synerfo1234', 'Rafi Cahya Putra');"
-
-update_owner = "UPDATE owner SET username = ?, password = ?, nama = ? where id = 1"
-
-get_owner = "SELECT username, password, nama FROM owner"
+from user import User
 
 connection = sqlite3.connect("rajaes.db")
 
 
 def createOwnerTable(connection):
     with connection:
-        connection.execute(create_Owner_Table)
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS owner (id INTEGER NOT NULL PRIMARY KEY, username TEXT, password TEXT, nama TEXT, role TEXT);")
 
 
 def insertOwner(connection):
     with connection:
-        connection.execute(insert_owner)
+        connection.execute(
+            "INSERT INTO owner (username, password, nama, role) VALUES ('wnykhza', 'wnykhza77*', 'Fathorrosi', 'Owner');")
 
 
 def updateOwner(connection, username, password, nama):
     with connection:
-        connection.execute(update_owner, (username, password, nama))
+        connection.execute(
+            "UPDATE owner SET username = ?, password = ?, nama = ? where id = 1", (username, password, nama))
 
 
 def getOwner(connection):
     with connection:
-        return connection.execute(get_owner).fetchall()
+        return connection.execute("SELECT username, password, nama, role FROM owner").fetchall()
 
 
-class Owner:
+class Owner(User):
 
     def __init__(self, username, password, nama):
+        super().__init__(username, password, nama)
         self.__username = username
         self.__password = password
         self.__name = nama
@@ -63,7 +60,7 @@ class Owner:
         return self.__name
 
     @staticmethod
-    def promtUpdateOwner(connection):
+    def updateAccount(connection):
         owner = Owner(input("masukkan username : "), input(
             "masukkan password : "), input("masukkan nama : "))
         updateOwner(connection, owner.getUsername,

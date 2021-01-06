@@ -1,44 +1,39 @@
 import sqlite3
-
-create_Item = "CREATE TABLE IF NOT EXISTS item (id INTEGER NOT NULL PRIMARY KEY, nama text , hargaJual integer, hargaBeli integer, stok integer);"
-
-insert_Item = "INSERT INTO item (nama, hargaJual, hargaBeli, stok) VALUES ('Jelly', 10000, 7000, 100), ('Cincau', 5000, 7000, 70), ('Mutiara', 12000, 8000, 77), ('Rumput Laut', 20000, 15000, 150), ('Kolang Kaling', 15000, 13000, 177);"
-
-insert_New_Item = "INSERT INTO item (nama, hargaJual, hargaBeli, stok) VALUES (?, ?, ?, ?);"
-
-update_item = "UPDATE item SET nama = ?, hargaJual = ?, hargaBeli = ?, stok = ? WHERE id = ?"
-
-get_item = "SELECT * FROM item"
+from user import User
+from tabulate import tabulate
 
 connection = sqlite3.connect("rajaes.db")
 
 
 def createItemTable(connection):
     with connection:
-        connection.execute(create_Item)
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS item (id INTEGER NOT NULL PRIMARY KEY, nama text , hargaJual integer, hargaBeli integer, stok integer);")
 
 
 def insertItem(connection):
     with connection:
-        connection.execute(insert_Item)
+        connection.execute("INSERT INTO item (nama, hargaJual, hargaBeli, stok) VALUES ('Jelly', 10000, 7000, 100), ('Cincau', 5000, 7000, 70), ('Mutiara', 12000, 8000, 77), ('Rumput Laut', 20000, 15000, 150), ('Kolang Kaling', 15000, 13000, 177);")
 
 
 def insertNewItem(connection, nama, hargaJual, hargaBeli, stok):
     with connection:
-        connection.execute(insert_New_Item, (nama, hargaJual, hargaBeli, stok))
+        connection.execute(
+            "INSERT INTO item (nama, hargaJual, hargaBeli, stok) VALUES (?, ?, ?, ?);", (nama, hargaJual, hargaBeli, stok))
 
 
-def getItem(connection):
+def getItems(connection):
     with connection:
-        return connection.execute(get_item).fetchall()
+        return connection.execute("SELECT * FROM item").fetchall()
 
 
-def updateItem(connection, nama, hargaJual, hargaBeli, stok, idItem):
+def updateItems(connection, nama, hargaJual, hargaBeli, stok, idItem):
     with connection:
-        connection.execute(update_item, (nama, hargaJual, hargaBeli, stok, idItem))
+        connection.execute("UPDATE item SET nama = ?, hargaJual = ?, hargaBeli = ?, stok = ? WHERE id = ?",
+                           (nama, hargaJual, hargaBeli, stok, idItem))
 
 
-class Item:
+class Item(User):
 
     def __init__(self, nama, hargaJual, hargaBeli, stok):
         self.__name = nama
@@ -87,19 +82,21 @@ class Item:
                       item.getPurchasePrice, item.getStock)
 
     @staticmethod
-    def getAllItem(connection):
-        items = getItem(connection)
+    def getItem(connection):
+        items = getItems(connection)
+        header = ["ID Barang", "Nama Barang",
+                  "Harga Jual", "Harga Beli", "Stok"]
+        result = []
 
-        print("ID \t Nama \t\t Harga Jual \t Harga Beli \t Stok")
         for barang in items:
-            print("{} \t {} \t {} \t\t {} \t\t {}".format(
-                barang[0], barang[1], barang[2], barang[3], barang[4]))
+            result.append(barang)
+        return print(tabulate(result, headers=header))
 
     @staticmethod
-    def editItem(connection):
+    def updateItem(connection):
         idItem = input("masukkan ID : ")
         item = Item(input("masukkan nama : "), input("masukkan harga jual : "), input(
             "masukkan harga beli : "), input("masukkan stok : "))
 
-        updateItem(connection, item.getName, item.getSellPrice,
-                      item.getPurchasePrice, item.getStock, idItem)
+        updateItems(connection, item.getName, item.getSellPrice,
+                    item.getPurchasePrice, item.getStock, idItem)

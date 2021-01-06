@@ -1,42 +1,39 @@
 import sqlite3
-
-create_Ordered_Table = "CREATE TABLE IF NOT EXISTS ordered (id INTEGER NOT NULL PRIMARY KEY, namaPemesan TEXT, alamat TEXT, barang TEXT, jumlah INTEGER, tanggalPesan TEXT, status TEXT);"
-
-insert_order = "INSERT INTO ordered (namaPemesan, alamat, barang, jumlah, tanggalPesan, status) VALUES (?, ?, ?, ?, ?, ?);"
-
-update_order_status = "UPDATE ordered SET status = 'selesai' WHERE id = ?"
-
-get_order = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'proses'"
-
-get_sales = "SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'selesai'"
+from user import User
+from tabulate import tabulate
 
 connection = sqlite3.connect("rajaes.db")
 
 
-def createOrderTable(connection):
+def createOrderedTable(connection):
     with connection:
-        connection.execute(create_Ordered_Table)
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS ordered (id INTEGER NOT NULL PRIMARY KEY, namaPemesan TEXT, alamat TEXT, barang TEXT, jumlah INTEGER, tanggalPesan TEXT, status TEXT);")
 
 
 def insertOrder(connection, namaPemesan, alamat, barang, jumlah, tanggalPesan, status):
     with connection:
-        connection.execute(insert_order, (namaPemesan, alamat,
-                                          barang, jumlah, tanggalPesan, status))
+        connection.execute("INSERT INTO ordered (namaPemesan, alamat, barang, jumlah, tanggalPesan, status) VALUES (?, ?, ?, ?, ?, ?);",
+                           (namaPemesan, alamat, barang, jumlah, tanggalPesan, status))
 
 
 def updateStatus(connection, idStatus):
     with connection:
-        connection.execute(update_order_status, (idStatus))
+        connection.execute(
+            "UPDATE ordered SET status = 'selesai' WHERE id = ?", (idStatus))
 
 
-def getOrder(connection):
+createOrderedTable(connection)
+
+
+def getOrders(connection):
     with connection:
-        return connection.execute(get_order).fetchall()
+        return connection.execute("SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'proses'").fetchall()
 
 
 def getSales(connection):
     with connection:
-        return connection.execute(get_sales).fetchall()
+        return connection.execute("SELECT id, namaPemesan, alamat, barang, jumlah, tanggalPesan, status FROM ordered WHERE status = 'selesai'").fetchall()
 
 
 class Ordered:
@@ -102,28 +99,37 @@ class Ordered:
         order = Ordered(input("masukkan nama pemesan : "), input("masukkan alamat : "), input("masukkan barang : "), input(
             "masukkan jumlah : "), input("masukkan tanggal pesanan : "), input("masukkan status : "))
 
-        insertOrder(connection, order.getOrderName, order.getAddress, order.getItem, order.getAmount, order.getOrderDate, order.getStatus)
+        insertOrder(connection, order.getOrderName, order.getAddress,
+                    order.getItem, order.getAmount, order.getOrderDate, order.getStatus)
 
     @staticmethod
-    def seeOrdered(connection):
-        orders = getOrder(connection)
+    def getOrder(connection):
+        orders = getOrders(connection)
 
-        print("ID \t Nama Pemesan \t\t Alamat \t Barang \t Jumlah \t Tanggal Pesanan  Status")
-        for ordered in orders:
-            print("{} \t {} \t {} \t {} \t {} \t\t {}       {}".format(ordered[0], ordered[1], ordered[2], ordered[3], ordered[4], ordered[5], ordered[6]))
+        header = ["ID Pesanan", "Nama Pemesan", "Alamat Pemesan",
+                  "Barang", "Jumlah", "Tanggal Pesanan", "Status"]
+        result = []
+
+        for order in orders:
+            result.append(order)
+
+        return print(tabulate(result, headers=header))
 
     @staticmethod
-    def addSales(connection):
+    def addSale(connection):
         idStatus = input("masukkan id : ")
 
         updateStatus(connection, idStatus)
 
     @staticmethod
-    def seeSale(connection):
+    def getSale(connection):
         sales = getSales(connection)
 
-        print(
-            "ID \t Nama Pemesan \t\t Alamat \t Barang \t Jumlah \t Tanggal Pesanan  Status")
+        header = ["ID Penjualan", "Nama Pemesan", "Alamat Pemesan",
+                  "Barang", "Jumlah", "Tanggal Pesanan", "Status"]
+        result = []
+
         for sale in sales:
-            print("{} \t {} \t {} \t {} \t {} \t\t {}       {}".format(
-                sale[0], sale[1], sale[2], sale[3], sale[4], sale[5], sale[6]))
+            result.append(sale)
+
+        return print(tabulate(result, headers=header))
